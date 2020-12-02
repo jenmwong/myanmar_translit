@@ -4,6 +4,7 @@ use warnings;
 use utf8;
 
 
+
 binmode(STDOUT, ":utf8");
 
 my $text = "။ၐြီ။ နမော ဗုဒ္ဓါယ။ ပုရှာသ္ခင် သာသနာ အနှစ် တစ်ထောင် ခြောက်ရျာ နှစ်ဆာယ ဟေတ်နှစ် လောန် လိယ်ဗြီရကာ။";
@@ -88,7 +89,7 @@ sub transliterate{
 		$string =~ s/\x{15bb}/⅛/g; # Canadian syllabics blackfoot na=> ᖻ
 		$string =~ s/\x{156e}/¹⁄₁₆/g; # Canadian syllabics ttha=> ᕮ
 		$string =~ s/\x{13c0}/¹⁄₃₂/g; # Ꮐ Cherokee letter nah=> Ꮐ
-		$string =~ s/\x{146a}/¹⁄₃₂/g;  # Canadian syllabics tta=> ᑪ
+		$string =~ s/\x{146a}/¹⁄₃₂/g; # Canadian syllabics tta=> ᑪ
 		
 		# Replace (a+)Medials
 		$string =~ s/a*\x{103b}/ya/g; # ျ ြ ွ ှ
