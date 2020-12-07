@@ -62,7 +62,7 @@ sub transliterate{
 		$string =~ s/\x{1020}/ḷa/g; #ဠ
 		$string =~ s/\x{1021}\x{102d}\x{102f}/aui/g; #အို # priority combination
 		$string =~ s/\x{1021}\x{103a}/a/g; #အ် # priority combination
-		$string =~ s/\x{1021}/a/g; #အ
+		$string =~ s/\x{1021}/A/g; #အ
 		
 		# N.B. in Unicode အာ is a combination of independant အ and dependant vowel ာ, 
 		# the latter is transliterated later
@@ -120,12 +120,19 @@ sub transliterate{
 		$string =~ s/a*\x{1031}/e/g; # ဲ
 		$string =~ s/a*\x{1032}/ai/g; #  ဲ
 
-		$string =~ s/\x{1036}/ṃ/g; # ံ ANUSVARA  -ṁ/-ṃ ??
+		#$string =~ s/\x{1036}/ṃ/g; # ံ ANUSVARA  -ṁ/-ṃ ??
+		$string =~ s/\x{1036}/ṁ/g; # ံ ANUSVARA  -ṁ/-ṃ ??
+		$string =~ s/a\x{1037}\x{103a}/./g;  # priority combination ex င့်
+		#$string =~ s/a\x{1037}\x{103a}/.·/g; #  priority combination ex င့်; asat ် replaced by median dot · or nothing ??
 		$string =~ s/\x{1037}/./g; # dot below, aukmyit ့  
 		$string =~ s/\x{1038}/ḥ/g; # း VISARGA 
 		$string =~ s/a*\x{1039}//g; # virama replaced by nothing just remove previous inherent a vowel
-		$string =~ s/a\x{103a}/·/g; # asat ် replaced by median dot · or nothing ??
-
+		#$string =~ s/a\x{103a}/·/g; # asat ် replaced by median dot · or nothing ??
+		#$string =~ s/a\x{1037}\x{103a}/.·/g; # asat ် replaced by median dot · or nothing ??
+		$string =~ s/a\x{103a}//g; # asat ် replaced by median dot · or nothing ??
+		$string =~ s/A/a/g;
+		$string =~ s/aā/ā/g;
+		$string =~ s/aa/a/g;
 		
 		return $string;
 }
