@@ -9,7 +9,7 @@ binmode(STDOUT, ":utf8");
 
 my $text = "။ၐြီ။ နမော ဗုဒ္ဓါယ။ ပုရှာသ္ခင် သာသနာ အနှစ် တစ်ထောင် ခြောက်ရျာ နှစ်ဆာယ ဟေတ်နှစ် လောန် လိယ်ဗြီရကာ။";
 
-print transliterate($text)."\n"; 
+print "$text\n".transliterate($text)."\n"; 
 
 
 sub transliterate{
@@ -118,7 +118,7 @@ sub transliterate{
 		$string =~ s/a*\x{1034}/o/g;
 		$string =~ s/a*\x{1035}/e/g;
 		$string =~ s/\x{1036}/ṃ/g; # ံ ANUSVARA 
-		$string =~ s/\x{1037}/ɂ/g; # dot below, aukmyit ့ replaced by ɂ 
+		$string =~ s/a?\x{1037}/ɂ/g; # dot below, aukmyit ့ replaced by ɂ 
 		$string =~ s/\x{1038}/ḥ/g; # း VISARGA 
 		$string =~ s/\x{1293}/û/g; # Old Burmese au vowel substitute ና U+1293 ETHIOPIC SYLLABLE NAA
 		$string =~ s/a*\x{1039}//g; # virama replaced by nothing just remove previous inherent a vowel
