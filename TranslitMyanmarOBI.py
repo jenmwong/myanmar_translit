@@ -7,6 +7,8 @@ import string
 # usage python3 > output.txt
 # transliterates text file myfile.txt to output file output.txt
 
+# TODO: use https://docs.python.org/3/library/stdtypes.html#str.maketrans for simple translations
+
 def translitcons(string):
 	cons_indep_signs = {
 		'\u1000': 'ka', '\u1001': 'kha', '\u1002': 'ga', '\u1003': 'gha', '\u1004': 'ṅa', #ကခဂဃင
@@ -49,7 +51,7 @@ def translitcons(string):
 		'\u15bb': '⅛', # Canadian syllabics blackfoot na: ᖻ
 		'\u156e': '¹⁄₁₆', # Canadian syllabics ttha: ᕮ
 		'\u13c0': '¹⁄₃₂', # Ꮐ Cherokee letter nah: Ꮐ
-		'\u146a': '¹⁄₃₂' # Canadian syllabics tta: ᑪ
+		'\u146a': '¹⁄₃₂', # Canadian syllabics tta: ᑪ
 		'\u1293': 'û' # Unicode Character 'ETHIOPIC SYLLABLE NAA' (U+1293) for au vowel hook
 	}
 
@@ -130,22 +132,23 @@ def translitdepends(string):
 		translit_string += char
 	return translit_string
 
+def translit(string):
+	# replace consonants
+	textc = translitcons(string)
+	# replace a+medials  
+	textcm = translitmedials(textc)
+	#replace compound vowels
+	textcmcv = translitcompvow(textcm)
+	# replace a+vowels translitdepends
+	textcmcvd = translitdepends(textcmcv)
+	return textcmcvd
+
 if __name__ == "__main__":
 	f = codecs.open('myfile.txt', "r", "utf-8")
 	lines = f.readlines()
 	for line in lines:
-#		textline = u"ကိုမြစေတီဘုရားကျောက်စာ၊ မြန်မာ၊ ကို"
+		# textline = u"ကိုမြစေတီဘုရားကျောက်စာ၊ မြန်မာ၊ ကို"
 		print(line)
-# replace consonants	
-		textc = translitcons(line)
-#		print(textc)
-# replace a+medials  
-		textcm = translitmedials(textc)
-#		print(textcm)
-#replace compound vowels
-		textcmcv = translitcompvow(textcm)
-#		print(textcmcv)
-# replace a+vowels translitdepends
-		textcmcvd = translitdepends(textcmcv)
+		t = translit(line)
 		print(textcmcvd) 
 	f.close()
