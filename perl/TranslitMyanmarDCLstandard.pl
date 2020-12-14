@@ -57,7 +57,7 @@ sub transliterate{
 		$string =~ s/\x{1051}/ṣa/g; #ၑ
 		$string =~ s/\x{101e}/sa/g; #သ
 		
-		$string =~ s/\x{101f}\x{103a}/h/g; #ဟ် # priority combination
+		$string =~ s/\x{101f}\x{103a}/h·/g; #ဟ် # priority combination
 		$string =~ s/\x{101f}/ha/g; #ဟ
 		$string =~ s/\x{1020}/ḷa/g; #ဠ
 		$string =~ s/\x{1021}\x{103a}/°A·/g; #အ် # priority combination (tone marker)

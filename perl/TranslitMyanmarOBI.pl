@@ -46,9 +46,10 @@ sub transliterate{
 		$string =~ s/\x{101c}/la/g;
 		$string =~ s/\x{101d}/va/g;
 		$string =~ s/\x{101e}/sa/g;
-		$string =~ s/\x{101f}/ha/g; # ဟဠအ
+		$string =~ s/\x{101f}/ha/g; # ဟဠ
 		$string =~ s/\x{1020}/ḷa/g;
-		$string =~ s/\x{1021}/ʔa/g;
+		$string =~ s/\x{1021}\x{103a}/ʔAʻ/g; #အ် # priority combination (tone marker)
+		$string =~ s/\x{1021}/ʔa/g; # အ
 		$string =~ s/\x{1023}/ʔi/g; # ဣဤဥဦဧ
 		$string =~ s/\x{1024}/ʔī/g;
 		$string =~ s/\x{1025}/ʔu/g;
@@ -127,6 +128,7 @@ sub transliterate{
 		$string =~ s/a*\x{1057}/r̥̄/g;
 		$string =~ s/a*\x{1058}/ḷ/g;
 		$string =~ s/a*\x{1059}/ḹ/g; 
+		$string =~ s/A/a/g;
 		
 		return $string;
 }
