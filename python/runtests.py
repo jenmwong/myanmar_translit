@@ -1,5 +1,6 @@
 import DCLconvert
 import myansylseg
+import UnicodeNorm
 import csv
 
 def testonetranslation(uni, expected):
@@ -9,12 +10,22 @@ def testonetranslation(uni, expected):
 
 def testtranslation():
     with open('../tests/curtest.tsv',  newline='') as csvfile:
-        srcreader = csv.reader(csvfile, delimiter='\t')
+        srcreader = csv.reader(csvfile, delimiter=',')
         for row in srcreader:
             if not row[0] or row[0].startswith("#"):
                 continue
             testonetranslation(row[0], row[1])
             #break
+
+def testnormalization():
+    with open('../tests/normalizations.csv',  newline='') as csvfile:
+        srcreader = csv.reader(csvfile, delimiter=',')
+        for row in srcreader:
+            if not row[0] or row[0].startswith("#"):
+                continue
+            res = UnicodeNorm.canon(row[0])
+            if res != row[1]:
+                print("normalizing %s : got %s but expected %s" % (row[0], res, row[1]))
 
 def testsegmentationfile(fname):
     with open(fname,  newline='') as fp:
@@ -35,4 +46,6 @@ def testsegmentation():
     #testsegmentationfile('../tests/MixPaliBurTest-RajakumarInscriptionBeg.txt')
 
 #testsegmentation()
-testtranslation()
+#testtranslation()
+
+testnormalization()

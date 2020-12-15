@@ -107,6 +107,7 @@ CLASSES = {
     "ၗ": [ 10, "r̥̄"],
     "ၘ": [ 10, "ḷ"],
     "ၙ": [ 10, "ḹ"],
+    " ": [ 11, "_"], # transliterating space with a _
 }
 
 # TODO: Vowel_dep_signs with အ
