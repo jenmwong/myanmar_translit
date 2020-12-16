@@ -68,9 +68,6 @@ CLASSES = {
     "ူ": [ 10, "ū"],
     "ေ": [ 10, "e"],
     "ဲ": [ 10, "ai"],
-    "ဳ": [ 10, ""], # not indicated in the article
-    "ဴ": [ 10, ""], # not indicated
-    "ဵ": [ 10, ""], # not indicated
     "ံ": [ 4, "ṁ"],
     "့": [ 4, "."],
     "း": [ 4, "ḥ"], 
@@ -80,7 +77,7 @@ CLASSES = {
     "ြ": [ 7, "r"],
     "ွ": [ 7, "v"],
     "ှ": [ 7, "h"],
-    "ဿ": [ 5, "ssa"],
+    "ဿ": [ 5, "ss"],
     "၀": [ 2, "0"],
     "၁": [ 2, "1"],
     "၂": [ 2, "2"],
@@ -101,12 +98,12 @@ CLASSES = {
     "ၑ": [ 1, "ṣ"],
     "ၒ": [ 3, "°r̥"], # TODO: check if they are 3 or 6
     "ၓ": [ 3, "°r̥̄"],
-    "ၔ": [ 3, "°ḷ"],
-    "ၕ": [ 3, "°ḹ"],
+    "ၔ": [ 3, "°l̥"],
+    "ၕ": [ 3, "°l̥̄"],
     "ၖ": [ 10, "r̥"],
     "ၗ": [ 10, "r̥̄"],
-    "ၘ": [ 10, "ḷ"],
-    "ၙ": [ 10, "ḹ"],
+    "ၘ": [ 10, "l̥"],
+    "ၙ": [ 10, "l̥̄"],
     " ": [ 11, "_"], # transliterating space with a _
 }
 
@@ -186,7 +183,8 @@ def getNextTokenInfo(s, idx, slen):
     if slen >= idx+3:
         nextthree = s[idx:idx+3]
         if nextthree == "္အ်":
-            return [3, [4, "'·"]]
+            # assigning it 0 is a bit hacky but I don't think it will have damaging consequences
+            return [3, [0, "'·"]]
     nextone = s[idx:idx+1]
     if nextone in CLASSES:
         return [1, CLASSES[nextone]]
