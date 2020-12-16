@@ -5,6 +5,8 @@ import functools
 # Hosken, M. Representing Myanmar in Unicode, Details and Examples Version 4
 # Terms of Use of Unicode probably apply: http://www.unicode.org/copyright.html
 
+# The code has been ported to Python3 by Elie Roux in 2020
+
 def collation_preprocess(s):
     s = re.sub(r'(\u1029)(\u1031\u102C)?((\u1004\u103A|[\u1000-\u1021])([\u1039\u103A ]))?', r"\u1021\4\5\u1031\u102C")
     s = re.sub(r'(\u102A)((\u1004\u103A|[\u1000-\u1021])([\u1039\u103A]))?', r"\u1021\3\4\u1031\u102C\u103A")
@@ -136,4 +138,22 @@ def canon(text, table=MUMRUT) :
                     index += length
             text = canon_subsort(table, text, keys, flags, start, index)
         index += 1
+    return text
+
+def normalize(text, extended=True):
+    text = canon(text)
+    # a Unicode equivalence: 1026 = 1025 102E
+    if "ဦ" in text:
+        text = text.replace("ဦ", "ဦ")
+    # the rest are not "truely" equivalent but close enough to be merged
+    if etextended:
+        if "သြော်" in text:
+            text = text.replace("သြော်", "ဪ")
+        if "ဩော်" in text:
+            text = text.replace("ဩော်", "ဪ")
+        if "သြ" in text:
+            text = text.replace("သြ", "ဩ")
+        if "စျ" in text:
+            text = text.replace("စျ", "ဈ")
+        # note that we could also normalize ၀ -> ဝ , but it could be a problem...
     return text
