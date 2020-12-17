@@ -183,8 +183,8 @@ def getNextTokenInfo(s, idx, slen):
     if slen >= idx+3:
         nextthree = s[idx:idx+3]
         if nextthree == "ော်":
-            # assigning it 4 allows no further 
-            return [3, [10, "au"]]
+            # assigning it 4 allows no further consonnant afterwards 
+            return [3, [4, "au"]]
         if nextthree == "္အ်":
             # assigning it 0 is a bit hacky but I don't think it will have damaging consequences
             return [3, [0, "'·"]]
@@ -201,26 +201,24 @@ def getNextTransBreak(s, idx):
     # the last replacement that made it into ress (not resrest)
     lastrepl = ""
     slen = len(s)
-    print("slen = %d" % slen)
     seenVowel = False
     while curidx < slen:
-        print("start loop with curidx = %d : %s" % (curidx, s[curidx:]))
+        #print("start loop with curidx = %d : %s" % (curidx, s[curidx:]))
         cinfo = getNextTokenInfo(s, curidx, slen)
         if not cinfo:
-            print("exiting bizarrely")
+            #print("exiting bizarrely")
             state = -1
             break
         nbchars = cinfo[0]
         cl = cinfo[1][0]
         repl = cinfo[1][1]
-        print(cl)
         if cl in [10, 3, 6]:
-            print("seenVowel = true")
+            #print("seenVowel = true")
             seenVowel = True
         # hack: အာ = °ā
-        print("ress=%s" %ress)
+        #print("ress=%s" %ress)
         if lastrepl == "'":
-            print("hacking အ")
+            #print("hacking အ")
             if repl == 'ā' or repl == 'ai':
                 ress = ress[:-1]+"°"
                 lastrepl = "°"
@@ -228,7 +226,7 @@ def getNextTransBreak(s, idx):
                 ress = ress[:-1]+"°a"
                 lastrepl = "°a"
                 seenVowel = True
-        print("ress=%s" %ress)
+        #print("ress=%s" %ress)
         if state is None:
             state = cl
             curidx += nbchars
@@ -237,15 +235,15 @@ def getNextTransBreak(s, idx):
             lastrepl = repl
             continue
         res = AUTO[state][cl]
-        print("trans = %s, cl=%s, repl=%s, lastrepl=%s, resrest = %s , %d + %d = %d " % (ress, cl, repl, lastrepl, resrest, state, cl, res))
+        #print("trans = %s, cl=%s, repl=%s, lastrepl=%s, resrest = %s , %d + %d = %d " % (ress, cl, repl, lastrepl, resrest, state, cl, res))
         if res > 5:
-            print("test %s" % res)
+            #print("test %s" % res)
             state = res
             curidx += nbchars
             resrest += repl
             continue
         if res == -1:
-            print("warning: illegal sequence")
+            #print("warning: illegal sequence")
             state = cl
             curidx += nbchars
             idx = curidx
@@ -254,7 +252,7 @@ def getNextTransBreak(s, idx):
             lastrepl = repl
             continue
         if res == -2:
-            print("test -2, lastrepl=%s" % lastrepl)
+            #print("test -2, lastrepl=%s" % lastrepl)
             state = cl
             curidx += nbchars
             idx = curidx
@@ -271,7 +269,6 @@ def getNextTransBreak(s, idx):
             seenVowel = True
             continue
         if res == 0:
-            print("test 0")
             state = cl
             curidx += nbchars
             idx = curidx
@@ -279,10 +276,9 @@ def getNextTransBreak(s, idx):
             resrest = ""
             lastrepl = repl
             continue
-        print("return with trans=%s res=%d, idx=%d, state=%d" % (ress, res, idx+res-1, state))
+        #print("return with trans=%s res=%d, idx=%d, state=%d" % (ress, res, idx+res-1, state))
         # 'a' after consonnant (cl=1, )
         if res == 1:
-            print("test1111")
             # the ' / ° dance of အ
             if lastrepl == "'":
                 # replacing the last repl by °:
@@ -291,14 +287,14 @@ def getNextTransBreak(s, idx):
             seenVowel = True
         else:
             ress += resrest+repl
-        print("return2 with trans=%s idx=%d" % (ress, idx+res-1))
+        #print("return2 with trans=%s idx=%d" % (ress, idx+res-1))
         return [idx+res-1, ress]
     # no further break, but we go out of intermediate states
     # by simulating a blank space afterwards
-    print("end: trans=%s, resrest=%s, state=%d" % (ress, resrest, state))
+    #print("end: trans=%s, resrest=%s, state=%d" % (ress, resrest, state))
     if state > 5:
         res = AUTO[state][11]
-        print("res = %d" %res)
+        #print("res = %d" %res)
         if res == -1:
             ress = ress+resrest
             return [-1, ress]
@@ -347,7 +343,7 @@ def getTrans(s):
         nextinfo = getNextTransBreak(s, idx)
         nextidx = nextinfo[0]
         nexttrans = nextinfo[1]
-        print("got nexttrans=%s, nextidx=%d" % (nexttrans, nextidx))
+        #print("got nexttrans=%s, nextidx=%d" % (nexttrans, nextidx))
         # °a conventionally sticks with the following syllable, as a nominalizer prefix
         if res and lasttrans != "°a":
             res += " "

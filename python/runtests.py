@@ -9,8 +9,9 @@ def testonetranslation(uni, expected):
     if res != expected:
         print("converting %s : got %s but expected %s" % (uni, res, expected))
 
-def testtranslation():
-    with open('../tests/curtest.tsv',  newline='') as csvfile:
+def testtranslation(fname):
+    print("testing Unicode -> transliteration in %s" % fname)
+    with open(fname,  newline='') as csvfile:
         srcreader = csv.reader(csvfile, delimiter='\t')
         for row in srcreader:
             if not row[0] or row[0].startswith("#"):
@@ -18,8 +19,9 @@ def testtranslation():
             testonetranslation(row[0], row[1])
             #break
 
-def testtranslationToUnicode():
-    with open('../tests/curtest.tsv',  newline='') as csvfile:
+def testtranslationToUnicode(fname):
+    print("testing transliteration -> Unicode in %s" % fname)
+    with open(fname,  newline='') as csvfile:
         srcreader = csv.reader(csvfile, delimiter='\t')
         for row in srcreader:
             if not row[0] or row[0].startswith("#"):
@@ -28,8 +30,9 @@ def testtranslationToUnicode():
             if res != row[0]:
                 print("converting %s : got %s but expected %s" % (row[1], res, row[0]))
 
-def testnormalization():
-    with open('../tests/normalizations.csv',  newline='') as csvfile:
+def testnormalization(fname):
+    print("testing Unicode normalization in %s" % fname)
+    with open(fname,  newline='') as csvfile:
         srcreader = csv.reader(csvfile, delimiter=',')
         for row in srcreader:
             if not row[0] or row[0].startswith("#"):
@@ -39,9 +42,11 @@ def testnormalization():
                 print("normalizing %s : got %s but expected %s" % (row[0], res, row[1]))
 
 def testsegmentationfile(fname):
+    print("testing syllable segmentation in %s" % fname)
     with open(fname,  newline='') as fp:
         for line in fp:
             expected = line.strip(' \n_')
+            expected = UnicodeNorm.canon(expected)
             if expected.startswith("#") or len(expected) == 0:
                 continue
             base = expected.replace('_', '')
@@ -51,13 +56,7 @@ def testsegmentationfile(fname):
                 print("segmenting %s : got %s but expected %s" % (base, res, expected))
             #break
 
-def testsegmentation():
-    #testsegmentationfile('../tests/syllableseg.txt')
-    testsegmentationfile('../tests/PaliTest-ShwegugyiInscriptionBeg.txt')
-    #testsegmentationfile('../tests/MixPaliBurTest-RajakumarInscriptionBeg.txt')
-
-#testsegmentation()
-#testtranslation()
-testtranslationToUnicode()
-
-#testnormalization()
+testsegmentationfile('../tests/syllableseg.txt')
+testtranslationToUnicode('../tests/TranslitMyanmarDCLexamples.tsv')
+testtranslation('../tests/TranslitMyanmarDCLexamples.tsv')
+testnormalization('../tests/normalizations.csv')

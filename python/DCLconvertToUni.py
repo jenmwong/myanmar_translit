@@ -161,13 +161,13 @@ def getNextTransBreak(s, idx, slen):
     while curidx < slen:
         cinfo = getNextToken(s, curidx, slen)
         if not cinfo:
-            print("exiting bizarrely")
+            #print("exiting bizarrely")
             state = -1
             break
         nbchars = cinfo[0]
         cl = cinfo[1][1]
         repl = cinfo[1][0]
-        print("iteration: cl=%d, repl=%s, state=%d" % (cl, repl, state))
+        #print("iteration: cl=%d, repl=%s, state=%d" % (cl, repl, state))
         # cut before if:
         # - not the first char
         # - state == 2 && cl != 11
@@ -223,7 +223,7 @@ def getTrans(s):
         nextinfo = getNextTransBreak(s, idx, slen)
         nextidx = nextinfo[1]
         nexttrans = nextinfo[0]
-        print("got nexttrans=%s, nextidx=%d" % (nexttrans, nextidx))
+        #print("got nexttrans=%s, nextidx=%d" % (nexttrans, nextidx))
         res += nexttrans
         lasttrans = nexttrans
         if nextidx == -1:
