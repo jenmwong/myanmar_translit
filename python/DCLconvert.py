@@ -182,6 +182,9 @@ def getNextTokenInfo(s, idx, slen):
             return [2, [0, "·."]]
     if slen >= idx+3:
         nextthree = s[idx:idx+3]
+        if nextthree == "ော်":
+            # assigning it 4 allows no further 
+            return [3, [10, "au"]]
         if nextthree == "္အ်":
             # assigning it 0 is a bit hacky but I don't think it will have damaging consequences
             return [3, [0, "'·"]]
