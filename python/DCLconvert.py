@@ -202,6 +202,7 @@ def getNextTransBreak(s, idx):
     lastrepl = ""
     slen = len(s)
     seenVowel = False
+    nbadditionalchars = 0
     while curidx < slen:
         #print("start loop with curidx = %d : %s" % (curidx, s[curidx:]))
         cinfo = getNextTokenInfo(s, curidx, slen)
@@ -233,6 +234,7 @@ def getNextTransBreak(s, idx):
             idx = curidx
             ress += resrest+repl
             lastrepl = repl
+            nbadditionalchars += nbchars-1
             continue
         res = AUTO[state][cl]
         #print("trans = %s, cl=%s, repl=%s, lastrepl=%s, resrest = %s , %d + %d = %d " % (ress, cl, repl, lastrepl, resrest, state, cl, res))
@@ -247,6 +249,7 @@ def getNextTransBreak(s, idx):
             state = cl
             curidx += nbchars
             idx = curidx
+            nbadditionalchars = 0
             ress += resrest+repl
             resrest = ""
             lastrepl = repl
@@ -256,6 +259,7 @@ def getNextTransBreak(s, idx):
             state = cl
             curidx += nbchars
             idx = curidx
+            nbadditionalchars = 0
             # the ' / ° dance of အ
             if lastrepl == "'":
                 # replacing the last repl by °:
@@ -272,6 +276,7 @@ def getNextTransBreak(s, idx):
             state = cl
             curidx += nbchars
             idx = curidx
+            nbadditionalchars = 0
             ress += resrest+repl
             resrest = ""
             lastrepl = repl
@@ -286,9 +291,10 @@ def getNextTransBreak(s, idx):
             ress += 'a'
             seenVowel = True
         else:
+            nbadditionalchars += nbchars-1
             ress += resrest+repl
         #print("return2 with trans=%s idx=%d" % (ress, idx+res-1))
-        return [idx+res-1, ress]
+        return [idx+res-1+nbadditionalchars, ress]
     # no further break, but we go out of intermediate states
     # by simulating a blank space afterwards
     #print("end: trans=%s, resrest=%s, state=%d" % (ress, resrest, state))
@@ -305,11 +311,13 @@ def getNextTransBreak(s, idx):
             if lastrepl == "'":
                 # replacing the last repl by °:
                 ress = ress[:-1]+"°"
-            return [idx+res-1, ress]
+            return [idx+res-1+nbadditionalchars, ress]
         ress = ress#+resrest
         if not seenVowel:
             ress += 'a'
-        return [idx+res-1, ress]
+        if res != 1:
+            nbadditionalchars += nbchars-1
+        return [idx+res-1+nbadditionalchars, ress]
     if state == 1:
         # the ' / ° dance of အ
         if lastrepl == "'":
@@ -317,6 +325,7 @@ def getNextTransBreak(s, idx):
             ress = ress[:-1]+"°"
         ress += 'a'+resrest
     else:
+        nbadditionalchars += nbchars-1
         ress += resrest
         if not seenVowel:
             ress += 'a'

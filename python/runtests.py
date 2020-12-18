@@ -54,9 +54,12 @@ def testsegmentationfile(fname):
             res = '_'.join(tokens)
             if res != expected:
                 print("segmenting %s : got %s but expected %s" % (base, res, expected))
-            #break
+            break
 
 testsegmentationfile('../tests/syllableseg.txt')
 testtranslationToUnicode('../tests/TranslitMyanmarDCLexamples.tsv')
 testtranslation('../tests/TranslitMyanmarDCLexamples.tsv')
 testnormalization('../tests/normalizations.csv')
+
+#print(DCLconvertToUni.getTrans("caṅkraṃ"))
+print(UnicodeNorm.canon("ဂျော့ချ်"))
