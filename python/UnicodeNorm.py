@@ -77,8 +77,11 @@ def get_vals(table, text, index) :
     elif flags & table.seqflag :
         for r in table.seqs[num] :
             # we use a generic lookup here
-            if r[0] + index > len(text) : 
+            if r[0] + index + 1 > len(text) : 
                 continue
+            #if index + 2 < len(text) and text[index+1:index+3] == '\u103A\u1039' :
+            #    length = 3
+            #    order = 0xFF
             hit = True
             for i in range(r[0]) :
                 if ord(text[index + 1 + i]) != r[2 + i] :

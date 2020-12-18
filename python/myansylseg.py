@@ -56,11 +56,8 @@ AUTO = [
 # G = 5
 [ -1, 1, 1, 1, 0, -1, 1, -1, 1, -1, 0, 1],
 # I = 6
-# There is a difference here with the article:
-# In the article 6 + 1 = 1
-# But we have 6 + 1 = 14
-# This allows ဧအ် to be one syllable
-[ -1, 14, 1, 1, -1, -1, 1, -1, 1, -1, -1, 1],
+# Note that this won't work for Old Burmese (for instance ဧည့်)
+[ -1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1, 1],
 # M = 7
 [ 2, 13, 1, 1, 0, 0, 1, 0, 1, -1, 0, 1],
 # P = 8
