@@ -68,7 +68,6 @@ def createTokens():
     addOneToken(["o"], "ော", 1, res)
     addOneToken(["ui"], "ို", 1, res)
     addOneToken(["ṁ", "ṁ", "ṃ", "ṃ", ""], "ံ", 1, res)
-    addOneToken(["."], "့", 1, res)
     addOneToken(["·"], "်", 2, res)
     addOneToken(["."], "့", 1, res)
     addOneToken(["·."], "့်", 2, res)
@@ -154,6 +153,7 @@ def getNextToken(s, idx, slen):
 #    - if consonnant, go to 1
 #    - medial/consonnant become consonnant
 # 2: non-Burmese / invalid
+
 def getNextTransBreak(s, idx, slen):
     state = -1
     res = ""
@@ -202,7 +202,7 @@ def getNextTransBreak(s, idx, slen):
             if cl in [0, 10, 12]:
                 state = 0
             elif cl == 11:
-                state == 2
+                state = 2
             else:
                 # this indicates some problem in the Unicode
                 state = 1
