@@ -1,6 +1,7 @@
 import DCLconvert
 import DCLconvertToUni
 import myansylseg
+import myansylseglenient
 import UnicodeNorm
 import csv
 
@@ -56,10 +57,24 @@ def testsegmentationfile(fname):
                 print("segmenting %s : got %s but expected %s" % (base, res, expected))
             break
 
+def testlenienttokenizer(fname):
+    print("testing lenient tokenization in %s" % fname)
+    with open(fname,  newline='') as fp:
+        for line in fp:
+            expected = line.strip(' \n_')
+            if expected.startswith("#") or len(expected) == 0:
+                continue
+            base = expected.replace('|', '')
+            res = myansylseglenient.getTrans(base, 1)
+            if res != expected:
+                print("tokenizing %s : got %s but expected %s" % (base, res, expected))
+            break
+
 testsegmentationfile('../tests/syllableseg.txt')
 testtranslationToUnicode('../tests/TranslitMyanmarDCLexamples.tsv')
 testtranslation('../tests/TranslitMyanmarDCLexamples.tsv')
 testnormalization('../tests/normalizations.csv')
+testlenienttokenizer('../tests/lenienttokens.csv')
 
 #print(DCLconvertToUni.getTrans("caṅkraṃ"))
 print(UnicodeNorm.canon("ဂျော့ချ်"))
