@@ -73,6 +73,9 @@ CLASSES = {
     "း": [ 4, "ḥ"], 
     "္": [ 9, ""],
     "်": [ 0, "·"],
+    # something slightly odd here: asat + virama is transliterated into nothing
+    # for instance သင်္ဃာ = saṅghā, သင်ဃာ = saṅ·ghā
+    "်္": [ 0, ""],
     "ျ": [ 7, "y"],
     "ြ": [ 7, "r"],
     "ွ": [ 7, "v"],
