@@ -158,6 +158,7 @@ def getNextTransBreak(s, idx, slen):
     state = -1
     res = ""
     curidx = idx
+    prevrepl = None
     while curidx < slen:
         cinfo = getNextToken(s, curidx, slen)
         if not cinfo:
@@ -178,7 +179,10 @@ def getNextTransBreak(s, idx, slen):
             return [res, curidx]
         if state == 0:
             if cl == 0:
-                res += "္"+repl
+                if prevrepl == "င":
+                    res += "်္"+repl    
+                else:
+                    res += "္"+repl
             elif cl == 12:
                 res += repl[1]
             else:
@@ -212,6 +216,7 @@ def getNextTransBreak(s, idx, slen):
         # - cl == 2
         if cl in [2, 13] or (cl == 11 and state != 2):
             return [res, curidx]
+        prevrepl = repl
     return [res, curidx]
 
 def getTrans(s):
