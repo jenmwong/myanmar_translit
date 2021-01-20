@@ -73,9 +73,6 @@ CLASSES = {
     "း": [ 4, "ḥ"], 
     "္": [ 9, ""],
     "်": [ 0, "·"],
-    # something slightly odd here: asat + virama is transliterated into nothing
-    # for instance သင်္ဃာ = saṅghā, သင်ဃာ = saṅ·ghā
-    "်္": [ 0, ""],
     "ျ": [ 7, "y"],
     "ြ": [ 7, "r"],
     "ွ": [ 7, "v"],
@@ -162,7 +159,6 @@ AUTO = [
 ]
 
 
-
 def getNextTokenInfo(s, idx, slen):
     if slen < idx+1:
         return None
@@ -171,6 +167,10 @@ def getNextTokenInfo(s, idx, slen):
         # hack: āu = āe = o
         if nexttwo == "ော" or nexttwo == "ာေ":
             return [2, [10, "o"]]
+        # something slightly odd here: asat + virama (= kinzi) is transliterated into nothing
+        # for instance သင်္ဃာ = saṅghā, သင်ဃာ = saṅ·ghā
+        if nexttwo == "်္":
+            return [2, [ 9, ""]]
         # hack: Unicode specifies 102D (i) 102F (u) but translitteration says ui
         if nexttwo == "ို":
             return [2, [10, "ui"]]
@@ -196,6 +196,8 @@ def getNextTokenInfo(s, idx, slen):
         return [1, CLASSES[nextone]]
     return [1, [11, nextone]]
 
+DEBUG = False
+
 def getNextTransBreak(s, idx):
     state = None
     curidx = idx
@@ -205,20 +207,21 @@ def getNextTransBreak(s, idx):
     lastrepl = ""
     slen = len(s)
     seenVowel = False
+    seenVowelInAmbiguous = False
     nbadditionalchars = 0
     while curidx < slen:
-        #print("start loop with curidx = %d : %s" % (curidx, s[curidx:]))
+        if DEBUG:
+            print("start loop with curidx = %d : %s" % (curidx, s[curidx:]))
         cinfo = getNextTokenInfo(s, curidx, slen)
         if not cinfo:
-            #print("exiting bizarrely")
+            print("exiting bizarrely")
             state = -1
             break
         nbchars = cinfo[0]
         cl = cinfo[1][0]
         repl = cinfo[1][1]
-        if cl in [10, 3, 6]:
-            #print("seenVowel = true")
-            seenVowel = True
+        if cl == 9:
+            seenVowel = False   
         # hack: အာ = °ā
         #print("ress=%s" %ress)
         if lastrepl == "'":
@@ -238,9 +241,20 @@ def getNextTransBreak(s, idx):
             ress += resrest+repl
             lastrepl = repl
             nbadditionalchars += nbchars-1
+            if cl in [10, 3, 6]:    
+                seenVowel = True
             continue
         res = AUTO[state][cl]
-        #print("trans = %s, cl=%s, repl=%s, lastrepl=%s, resrest = %s , %d + %d = %d " % (ress, cl, repl, lastrepl, resrest, state, cl, res))
+        # if we see a vowel and don't cut, we keep track of it:
+        if cl in [10, 3, 6]:
+            if res == 0:
+                seenVowel = True
+            elif res > 5:
+                seenVowelInAmbiguous = True
+        if res == 0 and seenVowelInAmbiguous:
+            seenVowel = True
+        if DEBUG:
+            print("trans = %s, cl=%s, repl=%s, lastrepl=%s, seenVowel=%s, resrest = %s , %d + %d = %d " % (ress, cl, repl, lastrepl, seenVowel, resrest, state, cl, res))
         if res > 5:
             #print("test %s" % res)
             state = res
@@ -263,6 +277,7 @@ def getNextTransBreak(s, idx):
             curidx += nbchars
             idx = curidx
             nbadditionalchars = 0
+            #print("seenVowel = %s" % seenVowel)
             # the ' / ° dance of အ
             if lastrepl == "'":
                 # replacing the last repl by °:
@@ -274,6 +289,7 @@ def getNextTransBreak(s, idx):
             resrest = ""
             lastrepl = repl
             seenVowel = True
+            #print("seenVowel = true")
             continue
         if res == 0:
             state = cl
@@ -284,23 +300,27 @@ def getNextTransBreak(s, idx):
             resrest = ""
             lastrepl = repl
             continue
-        #print("return with trans=%s res=%d, idx=%d, state=%d" % (ress, res, idx+res-1, state))
+        if DEBUG:
+            print("return with trans=%s res=%d, idx=%d, state=%d, seenVowel=%s" % (ress, res, idx+res-1, state, seenVowel))
         # 'a' after consonnant (cl=1, )
         if res == 1:
             # the ' / ° dance of အ
             if lastrepl == "'":
                 # replacing the last repl by °:
-                ress = ress[:-1]+"°"
-            ress += 'a'
-            seenVowel = True
+                ress = ress[:-1]+"°a"
+            elif not seenVowel:
+                ress += 'a'
+            #seenVowel = True
         else:
             nbadditionalchars += nbchars-1
             ress += resrest+repl
-        #print("return2 with trans=%s idx=%d" % (ress, idx+res-1))
+        if DEBUG:
+            print("return2 with trans=%s idx=%d" % (ress, idx+res-1))
         return [idx+res-1+nbadditionalchars, ress]
     # no further break, but we go out of intermediate states
     # by simulating a blank space afterwards
-    #print("end: trans=%s, resrest=%s, state=%d" % (ress, resrest, state))
+    if DEBUG:
+        print("end: trans=%s, lastrepl=%s, resrest=%s, state=%d, seenVowel=%s" % (ress, lastrepl, resrest, state, seenVowel))
     if state > 5:
         res = AUTO[state][11]
         #print("res = %d" %res)
@@ -316,7 +336,7 @@ def getNextTransBreak(s, idx):
                 ress = ress[:-1]+"°"
             return [idx+res-1+nbadditionalchars, ress]
         ress = ress#+resrest
-        if not seenVowel:
+        if not seenVowel and lastrepl != "·":
             ress += 'a'
         if res != 1:
             nbadditionalchars += nbchars-1
@@ -330,7 +350,7 @@ def getNextTransBreak(s, idx):
     else:
         nbadditionalchars += nbchars-1
         ress += resrest
-        if not seenVowel:
+        if not seenVowel and lastrepl != "·":
             ress += 'a'
     return [-1, ress]
 
