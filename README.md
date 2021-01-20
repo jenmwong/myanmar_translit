@@ -14,3 +14,6 @@ DCLsimplified: simplified transliteration system based on [D. Christian Lammerts
 - ask Christian:
   * if Old Burmese (such as ဧည့်) is frequent in FPL manuscripts
   * if au can be followed with a dependent consonnant / tone
+
+- order of medial vowels
+- normalize (space)a (or any vowel) -> °a
