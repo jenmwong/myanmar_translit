@@ -154,11 +154,15 @@ def getNextToken(s, idx, slen):
 #    - medial/consonnant become consonnant
 # 2: non-Burmese / invalid
 
+# desired order of medials in Unicode:
+# y (103B) r (103C) w (103D) h (103E), which is the "alphabetical" order in Unicode
+
 def getNextTransBreak(s, idx, slen):
     state = -1
     res = ""
     curidx = idx
     prevrepl = None
+    medials = []
     while curidx < slen:
         cinfo = getNextToken(s, curidx, slen)
         if not cinfo:
@@ -168,6 +172,9 @@ def getNextTransBreak(s, idx, slen):
         nbchars = cinfo[0]
         cl = cinfo[1][1]
         repl = cinfo[1][0]
+        if len(medials) and cl != 12:
+            medials.sort()
+            res += "".join(medials)
         #print("iteration: cl=%d, repl=%s, state=%d" % (cl, repl, state))
         # cut before if:
         # - not the first char
@@ -184,7 +191,7 @@ def getNextTransBreak(s, idx, slen):
                 else:
                     res += "္"+repl
             elif cl == 12:
-                res += repl[1]
+                medials.append(repl[1])
             else:
                 res += repl
                 state = 1
@@ -193,7 +200,6 @@ def getNextTransBreak(s, idx, slen):
                 state = 0
             if cl == 12:
                 res += repl[0]
-                state = 0
             else:
                 res += repl
         else:

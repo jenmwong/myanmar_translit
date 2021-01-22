@@ -70,11 +70,24 @@ def testlenienttokenizer(fname):
                 print("tokenizing %s : got %s but expected %s" % (base, res, expected))
             break
 
-testsegmentationfile('../tests/syllableseg.txt')
+def testmedialorder():
+    for s in ["mhrva", "mrvha", "mvrha", "mhvra", "mrhva"]:
+        res = DCLconvertToUni.getTrans(s)
+        if res != "မြွှ":
+            print("medial order: converting %s, expected %s but got %s" % (s, "မြွှ", res))
+    for s in ["mhyva", "myvha", "mvyha"]:
+        res = DCLconvertToUni.getTrans(s)
+        if res != "မျွှ":
+            print("medial order: converting %s, expected %s but got %s" % (s, "မျွှ", res))
+
+#testsegmentationfile('../tests/syllableseg.txt')
 testtranslationToUnicode('../tests/TranslitMyanmarDCLexamples.tsv')
 testtranslation('../tests/TranslitMyanmarDCLexamples.tsv')
-testnormalization('../tests/normalizations.csv')
-testlenienttokenizer('../tests/lenienttokens.csv')
+testmedialorder()
+#testnormalization('../tests/normalizations.csv')
+#testlenienttokenizer('../tests/lenienttokens.csv')
 
+teststr="""khau _ kkhā _ khkā _  ǁ Athūḥ thūḥ so tuiṅḥ krīḥ praññ krīḥ thīḥ choṅ maṅḥ apoṅḥ tui. kui acuiḥ ra tau mū so bhunḥ tau alvan krīḥ mrat tau mū lha so re mre ashyaṅḥ chaddan chaṅ maṅḥ sa khaṅ chaṅ phrū myāḥ rhaṅ lak nak cakrā sa khaṅ ashyaṅḥ bhava rhaṅ maṅḥ tarāḥ krīḥ bhurāḥ saññ sakkarāj 1214 khu ǁ"""
+print(DCLconvertToUni.getTrans(teststr))
 #print(DCLconvertToUni.getTrans("caṅkraṃ"))
-print(UnicodeNorm.canon("ဂျော့ချ်"))
+#print(UnicodeNorm.canon("ဂျော့ချ်"))

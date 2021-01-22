@@ -165,7 +165,7 @@ def getNextTokenInfo(s, idx, slen):
     if slen >= idx+2:
         nexttwo = s[idx:idx+2]
         # hack: āu = āe = o
-        if nexttwo == "ော" or nexttwo == "ာေ":
+        if nexttwo in ["ော", "ာေ", "ေါ", "ါေ"]:
             return [2, [10, "o"]]
         # something slightly odd here: asat + virama (= kinzi) is transliterated into nothing
         # for instance သင်္ဃာ = saṅghā, သင်ဃာ = saṅ·ghā
