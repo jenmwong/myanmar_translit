@@ -99,6 +99,9 @@ def createTokens():
     addOneToken(["l̥̄", "l̥̄", "l̥̄"], "ၙ", 1, res)
     addOneToken(["_"], " ", 11, res)
     addOneToken([" "], "", 13, res)
+    addOneToken(["ǁ"], "။", 13, res)
+    addOneToken(["||"], "။", 13, res)
+    addOneToken(["|"], "၊", 13, res)
     return res
 
 def addOneToken(variants, trans, cl, tokens):
@@ -197,7 +200,8 @@ def getNextTransBreak(s, idx, slen):
             if cl == 0:
                 if prevrepl == "င":
                     res += "်္"+repl
-                    prevmainconsonnant = ""   
+                    # to avoid recording င as the main consonnant in the case of a kinzi
+                    prevmainconsonnant = repl
                 else:
                     res += "္"+repl
             elif cl == 12:
