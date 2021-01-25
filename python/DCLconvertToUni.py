@@ -212,6 +212,7 @@ def getNextTransBreak(s, idx, slen):
             if cl == 12:
                 res += repl[0]
                 prevmainconsonnant = repl
+                state = 0
             else:
                 res += repl
         else:
