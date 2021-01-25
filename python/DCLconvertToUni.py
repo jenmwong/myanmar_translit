@@ -156,12 +156,17 @@ def getNextToken(s, idx, slen):
 
 # desired order of medials in Unicode:
 # y (103B) r (103C) w (103D) h (103E), which is the "alphabetical" order in Unicode
+#
+# alternance of ā:
+# - 102B after kha ခ, ga ဂ, ṅa င, ṭa ဋ, ḍha ဎ, pa ပ and va ဝ (even when it has a subscript, for instance khka; but not after kinzi)
+# - 102C otherwise 
 
 def getNextTransBreak(s, idx, slen):
     state = -1
     res = ""
     curidx = idx
     prevrepl = None
+    prevmainconsonnant = ""
     medials = []
     while curidx < slen:
         cinfo = getNextToken(s, curidx, slen)
@@ -172,9 +177,13 @@ def getNextTransBreak(s, idx, slen):
         nbchars = cinfo[0]
         cl = cinfo[1][1]
         repl = cinfo[1][0]
+        if repl in ["ာ", "ော"]:
+            if prevmainconsonnant in ["ခ", "ဂ", "င", "ဋ", "ဎ", "ပ", "ဝ"]:
+                repl = "ါ" if repl == "ာ" else "ေါ"
         if len(medials) and cl != 12:
             medials.sort()
             res += "".join(medials)
+            medials = []
         #print("iteration: cl=%d, repl=%s, state=%d" % (cl, repl, state))
         # cut before if:
         # - not the first char
@@ -187,7 +196,8 @@ def getNextTransBreak(s, idx, slen):
         if state == 0:
             if cl == 0:
                 if prevrepl == "င":
-                    res += "်္"+repl    
+                    res += "်္"+repl
+                    prevmainconsonnant = ""   
                 else:
                     res += "္"+repl
             elif cl == 12:
@@ -198,19 +208,26 @@ def getNextTransBreak(s, idx, slen):
         elif state == 1:
             if cl == 0:
                 state = 0
+                prevmainconsonnant = repl
             if cl == 12:
                 res += repl[0]
+                prevmainconsonnant = repl
             else:
                 res += repl
         else:
             if cl == 12:
                 res += repl[0]
+                prevmainconsonnant = repl
             else:
                 res += repl
+                if cl == 0:
+                    prevmainconsonnant = repl
         curidx += nbchars
         if state == -1:
             if cl in [0, 10, 12]:
                 state = 0
+                if cl == 0:
+                    prevmainconsonnant = repl
             elif cl == 11:
                 state = 2
             else:
